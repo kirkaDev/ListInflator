@@ -1,8 +1,10 @@
 package com.example.listinflator.mvp.view
 
-import moxy.viewstate.strategy.alias.OneExecution
+import com.example.listinflator.data.model.Setting
+import moxy.MvpView
+import moxy.viewstate.strategy.alias.AddToEnd
 
-@OneExecution
-interface ISettingsView {
-    fun showSettings()
+@AddToEnd
+interface ISettingsView: MvpView {
+    fun showSettings(settingsList: List<Setting>)
 }

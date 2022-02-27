@@ -4,6 +4,6 @@ import androidx.annotation.DrawableRes
 
 data class Setting(
     @DrawableRes val imgResource: Int,
-    val settingName: String,
+    val name: String,
     val state: String
 )
