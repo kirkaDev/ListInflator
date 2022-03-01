@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/settingsList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="@drawable/shape_settings_list_rounded"
+            tools:itemCount="4"
+            tools:listitem="@layout/item_setting"
+            android:layout_gravity="bottom|start"
+            tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            tools:orientation="vertical"
+            tools:spanCount="2">
+        </androidx.recyclerview.widget.RecyclerView>
+</FrameLayout>

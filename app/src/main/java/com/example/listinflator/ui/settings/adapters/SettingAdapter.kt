@@ -5,13 +5,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listinflator.R
 import com.example.listinflator.data.model.Setting
 
-class SettingAdapter(private val settingsList: List<Setting>,
+class SettingAdapter(private var settingsList: List<Setting>,
                      private val onClickSettingListener: OnClickSettingListener,
+                     private var isExpanded: Boolean
 ): RecyclerView.Adapter<SettingAdapter.SettingViewHolder>() {
+
+    fun setListIsExpanded(isExpanded: Boolean){
+        this.isExpanded = isExpanded
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -43,15 +49,18 @@ class SettingAdapter(private val settingsList: List<Setting>,
         fun onClick(setting: Setting)
     }
 
-    class SettingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class SettingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var settingImageButton: ImageButton? = null
         var settingNameTextView: AppCompatTextView? = null
         var settingStateTextView: AppCompatTextView? = null
 
         init {
             settingImageButton = itemView.findViewById(R.id.settingImage)
-            settingNameTextView = itemView.findViewById(R.id.settingNameTextView)
-            settingStateTextView = itemView.findViewById(R.id.settingStateTextView)
+
+            if (isExpanded){
+                settingNameTextView = itemView.findViewById<AppCompatTextView?>(R.id.settingNameTextView).apply { isVisible = true }
+                settingStateTextView = itemView.findViewById<AppCompatTextView?>(R.id.settingStateTextView).apply { isVisible = true }
+            }
         }
     }
 }
