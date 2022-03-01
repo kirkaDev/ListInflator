@@ -19,8 +19,8 @@ object SettingGenerator
                 ),
                 Setting(
                     R.drawable.ic_wifi_24,
-                    "Personal Hotspot",
-                    "Not discoverable"
+                    "Wi-Fi",
+                    "HUAWEI-9zBx-5G"
                 ),
                 Setting(
                     R.drawable.ic_bluetooth_24,
