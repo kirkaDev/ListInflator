@@ -2,7 +2,6 @@ package com.example.listinflator.ui.settings
 
 import android.os.Bundle
 import android.transition.*
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,15 +34,14 @@ class SettingsController : MvpController(), ISettingsView {
     // Span count for settings list
     private val spanCount = 2
     private val shortListSize = 4
+    private val animationDuration = 300L
 
-    lateinit var scene1: Scene
-    lateinit var scene2: Scene
+    lateinit var sceneListIsNotExpanded: Scene
+    lateinit var sceneListIsExpanded: Scene
 
-    var initialSettingsRV: RecyclerView? = null
-    var initialSettingsAdapter: SettingAdapter? = null
+    var settingsAdapter: SettingAdapter? = null
+    var transitionSet: TransitionSet? = null
 
-    var expandedList: RecyclerView? = null
-    var expandedListAdapter: SettingAdapter? = null
 
     override fun inject() {
         super.inject()
@@ -61,30 +59,27 @@ class SettingsController : MvpController(), ISettingsView {
         _binding = ViewControllerSettingsBinding.inflate(inflater, container, false)
         presenter.initUI()
 
-        scene1 = Scene.getSceneForLayout(
+        if (transitionSet==null){
+            transitionSet = TransitionSet().apply {
+                ordering = TransitionSet.ORDERING_TOGETHER
+                addTransition(Fade())
+                addTransition(ChangeBounds())
+                duration = animationDuration
+                interpolator = AccelerateInterpolator()
+            }
+        }
+
+        sceneListIsNotExpanded = Scene.getSceneForLayout(
             binding.sceneRoot,
             R.layout.scene1,
             activity?.applicationContext!!
         )
-        scene2 = Scene.getSceneForLayout(
-            binding.sceneRoot,
-            R.layout.scene2,
-            activity?.applicationContext!!
-        )
 
-        scene2.setEnterAction {
-            Log.d("Animation", "Animation, setEnterAction called")
-            expandedList = scene2.sceneRoot.findViewById<RecyclerView>(R.id.settingsList).apply {
-                expandedListAdapter = SettingAdapter(
-                    presenter.settings,
-                    object : SettingAdapter.OnClickSettingListener {
-                        override fun onClick(setting: Setting) {
-                        }
-                    },
-                    isExpanded = true
-                )
-
-                adapter = expandedListAdapter
+        sceneListIsNotExpanded.setEnterAction {
+            sceneListIsNotExpanded.sceneRoot.findViewById<RecyclerView>(R.id.settingsList).apply {
+                settingsAdapter?.updateList(presenter.settings.take(shortListSize))
+                settingsAdapter?.setListIsExpanded(false)
+                adapter = settingsAdapter
 
                 layoutManager = GridLayoutManager(
                     activity?.applicationContext,
@@ -92,39 +87,52 @@ class SettingsController : MvpController(), ISettingsView {
                     RecyclerView.VERTICAL,
                     false
                 )
-
             }
         }
 
-        scene2.sceneRoot.setOnClickListener {
-            scene2.exit()
+        sceneListIsExpanded = Scene.getSceneForLayout(
+            binding.sceneRoot,
+            R.layout.scene2,
+            activity?.applicationContext!!
+        )
+
+        sceneListIsExpanded.setEnterAction {
+            sceneListIsExpanded.sceneRoot.findViewById<RecyclerView>(R.id.settingsList).apply {
+                settingsAdapter?.updateList(presenter.settings)
+                settingsAdapter?.setListIsExpanded(true)
+                adapter = settingsAdapter
+
+                layoutManager = GridLayoutManager(
+                    activity?.applicationContext,
+                    spanCount,
+                    RecyclerView.VERTICAL,
+                    false
+                )
+            }
+        }
+
+        sceneListIsExpanded.sceneRoot.setOnClickListener {
+            TransitionManager.go(sceneListIsNotExpanded, transitionSet)
         }
 
         return binding.root
     }
 
     override fun showSettings(settingsList: List<Setting>) {
-        initialSettingsRV = binding.sceneRoot.scene1.settingsList.apply {
-            initialSettingsAdapter = SettingAdapter(
+        binding.sceneRoot.scene1.settingsList.apply {
+            settingsAdapter = SettingAdapter(
                 settingsList.take(shortListSize),
                 object : SettingAdapter.OnClickSettingListener {
                     override fun onClick(setting: Setting) {
                         (adapter as SettingAdapter).apply {
                             setListIsExpanded(true)
                         }
-                        val set = TransitionSet()
-                        set.addTransition(Fade())
-                        set.addTransition(ChangeBounds())
-                        set.ordering = TransitionSet.ORDERING_TOGETHER
-                        set.duration = 300
-                        set.interpolator = AccelerateInterpolator()
-                        Log.d("Animation", "Animation, transitioning to scene2")
-                        TransitionManager.go(scene2, set)
+                        TransitionManager.go(sceneListIsExpanded, transitionSet)
                     }
                 },
                 isExpanded = false
             )
-            adapter = initialSettingsAdapter
+            adapter = settingsAdapter
 
             layoutManager = GridLayoutManager(
                 activity?.applicationContext,
@@ -132,6 +140,19 @@ class SettingsController : MvpController(), ISettingsView {
                 RecyclerView.VERTICAL,
                 false
             )
+        }
+    }
+
+    override fun handleBack(): Boolean {
+        settingsAdapter?.let{
+            return if (it.getListIsExpanded()){
+                TransitionManager.go(sceneListIsNotExpanded, transitionSet)
+                true
+            } else{
+                super.handleBack()
+            }
+        } ?: kotlin.run {
+            return super.handleBack()
         }
     }
 }

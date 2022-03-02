@@ -15,8 +15,16 @@ class SettingAdapter(private var settingsList: List<Setting>,
                      private var isExpanded: Boolean
 ): RecyclerView.Adapter<SettingAdapter.SettingViewHolder>() {
 
+    fun updateList(settingsList: List<Setting>){
+        this.settingsList = settingsList
+    }
+
     fun setListIsExpanded(isExpanded: Boolean){
         this.isExpanded = isExpanded
+    }
+
+    fun getListIsExpanded(): Boolean{
+        return isExpanded
     }
 
     override fun onCreateViewHolder(

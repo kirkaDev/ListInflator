@@ -22,4 +22,10 @@ class MainActivity : AppCompatActivity() {
             router.setRoot(RouterTransaction.with(SettingsController()))
         }
     }
+
+    override fun onBackPressed() {
+        if (!router.handleBack()) {
+            super.onBackPressed()
+        }
+    }
 }
