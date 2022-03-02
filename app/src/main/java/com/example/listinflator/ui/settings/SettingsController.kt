@@ -1,10 +1,7 @@
 package com.example.listinflator.ui.settings
 
 import android.os.Bundle
-import android.transition.ChangeBounds
-import android.transition.Scene
-import android.transition.TransitionManager
-import android.transition.TransitionSet
+import android.transition.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,7 +68,7 @@ class SettingsController : MvpController(), ISettingsView {
         if (transitionSet == null) {
             transitionSet = TransitionSet().apply {
                 ordering = TransitionSet.ORDERING_TOGETHER
-                //addTransition(Fade())
+                addTransition(Fade())
                 addTransition(ChangeBounds())
                 duration = animationDuration
                 interpolator = AccelerateInterpolator()
