@@ -6,8 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingHorizontal="12dp"
     android:paddingVertical="8dp"
-    android:orientation="vertical"
-    android:background="@color/black_alpha">
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/deviceNameTextView"

@@ -48,7 +48,8 @@
         app:layout_constraintBottom_toTopOf="@+id/bluetoothSettingsLabel"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_bluetooth_device"
-        tools:itemCount="20"
+        android:background="@color/black_alpha"
+        tools:itemCount="2"
         tools:orientation="vertical">
     </androidx.recyclerview.widget.RecyclerView>
 

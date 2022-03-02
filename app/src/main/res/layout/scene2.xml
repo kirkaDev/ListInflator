@@ -5,8 +5,6 @@
     android:id="@+id/containerExpandedList"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginHorizontal="24dp"
-    android:layout_marginVertical="96dp"
     android:layout_gravity="center">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -14,9 +12,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/shape_settings_list_rounded"
-        android:layout_gravity="center"
         android:paddingHorizontal="16dp"
         android:paddingVertical="20dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="80dp"
+        android:layout_gravity="center"
         tools:itemCount="6"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:listitem="@layout/item_setting"

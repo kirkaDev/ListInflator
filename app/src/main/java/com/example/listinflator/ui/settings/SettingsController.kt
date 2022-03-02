@@ -1,11 +1,16 @@
 package com.example.listinflator.ui.settings
 
 import android.os.Bundle
-import android.transition.*
+import android.transition.ChangeBounds
+import android.transition.Scene
+import android.transition.TransitionManager
+import android.transition.TransitionSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -66,7 +71,7 @@ class SettingsController : MvpController(), ISettingsView {
         if (transitionSet == null) {
             transitionSet = TransitionSet().apply {
                 ordering = TransitionSet.ORDERING_TOGETHER
-                addTransition(Fade())
+                //addTransition(Fade())
                 addTransition(ChangeBounds())
                 duration = animationDuration
                 interpolator = AccelerateInterpolator()
@@ -157,9 +162,7 @@ class SettingsController : MvpController(), ISettingsView {
     }
 
     override fun showBluetoothScreen(devicesList: List<BluetoothDevice>) {
-        if (bluetoothDevicesAdapter == null) {
-            bluetoothDevicesAdapter = BluetoothAdapter(devicesList)
-        }
+        bluetoothDevicesAdapter = BluetoothAdapter(devicesList)
 
         sceneBluetoothDevices = Scene.getSceneForLayout(
             binding.sceneRoot,
@@ -170,10 +173,20 @@ class SettingsController : MvpController(), ISettingsView {
         sceneBluetoothDevices.setEnterAction {
             sceneBluetoothDevices.sceneRoot.findViewById<RecyclerView>(R.id.devicesList).apply {
                 adapter = bluetoothDevicesAdapter
+
                 layoutManager = LinearLayoutManager(
                     activity?.applicationContext,
                     RecyclerView.VERTICAL,
                     false
+                )
+
+                addItemDecoration(
+                    DividerItemDecoration(this.context,
+                        RecyclerView.VERTICAL).apply{
+                        drawable?.setTint(
+                            ContextCompat.getColor(context, R.color.white)
+                        )
+                    }
                 )
             }
         }

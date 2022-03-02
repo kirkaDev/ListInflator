@@ -57,7 +57,7 @@ object SettingGenerator
                     "Mazda CarPlay",
                     BluetoothDevice.ConnectionStates.Connected
                 ),
-                BluetoothDevice(
+              BluetoothDevice(
                     "ELM327",
                     BluetoothDevice.ConnectionStates.Disconnected
                 ),
@@ -65,7 +65,7 @@ object SettingGenerator
                     "Apple Watch",
                     BluetoothDevice.ConnectionStates.Disconnected
                 ),
-                BluetoothDevice(
+                  BluetoothDevice(
                     "Xiaomi Mi Band 4",
                     BluetoothDevice.ConnectionStates.Disconnected
                 ),
