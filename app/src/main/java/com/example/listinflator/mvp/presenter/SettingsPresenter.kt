@@ -11,15 +11,24 @@ import javax.inject.Inject
 class SettingsPresenter
     @Inject constructor()
     : MvpPresenter<ISettingsView>() {
+    private val shortListSize = 4
+
     var settings: List<Setting> = emptyList()
 
-
     fun initUI(){
-        presenterScope.launch{
-            settings = SettingGenerator.generateSettings()
-            viewState.showSettings(
-                settings
-            )
+        settings = SettingGenerator.generateSettings()
+        showShortList()
+    }
+
+    fun showShortList(){
+        presenterScope.launch {
+            viewState.showShortSettingsList(settings.take(shortListSize))
+        }
+    }
+
+    fun showFullSettingsList(){
+        presenterScope.launch {
+            viewState.showFullSettingsList(settings)
         }
     }
 

@@ -7,6 +7,7 @@ import moxy.viewstate.strategy.alias.AddToEnd
 
 @AddToEnd
 interface ISettingsView: MvpView {
-    fun showSettings(settingsList: List<Setting>)
+    fun showShortSettingsList(settingsList: List<Setting>)
+    fun showFullSettingsList(settingsList: List<Setting>)
     fun showBluetoothScreen(devicesList: List<BluetoothDevice>)
 }

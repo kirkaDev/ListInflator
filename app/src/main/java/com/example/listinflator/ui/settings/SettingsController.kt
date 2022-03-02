@@ -19,8 +19,6 @@ import com.example.listinflator.mvp.view.ISettingsView
 import com.example.listinflator.ui.main.MvpController
 import com.example.listinflator.ui.settings.adapters.BluetoothAdapter
 import com.example.listinflator.ui.settings.adapters.SettingAdapter
-import kotlinx.android.synthetic.main.scene1.view.*
-import kotlinx.android.synthetic.main.view_controller_settings.view.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -36,12 +34,14 @@ class SettingsController : MvpController(), ISettingsView {
 
     // Span count for settings list
     private val spanCount = 2
-    private val shortListSize = 4
+
     private val animationDuration = 300L
 
     lateinit var sceneListIsNotExpanded: Scene
     lateinit var sceneListIsExpanded: Scene
     lateinit var sceneBluetoothDevices: Scene
+
+    var sceneBackStack: ArrayList<Scene> = ArrayList()
 
     var settingsAdapter: SettingAdapter? = null
     var bluetoothDevicesAdapter: BluetoothAdapter? = null
@@ -63,7 +63,7 @@ class SettingsController : MvpController(), ISettingsView {
         _binding = ViewControllerSettingsBinding.inflate(inflater, container, false)
         presenter.initUI()
 
-        if (transitionSet==null){
+        if (transitionSet == null) {
             transitionSet = TransitionSet().apply {
                 ordering = TransitionSet.ORDERING_TOGETHER
                 addTransition(Fade())
@@ -73,6 +73,10 @@ class SettingsController : MvpController(), ISettingsView {
             }
         }
 
+        return binding.root
+    }
+
+    override fun showShortSettingsList(settingsList: List<Setting>) {
         sceneListIsNotExpanded = Scene.getSceneForLayout(
             binding.sceneRoot,
             R.layout.scene1,
@@ -81,8 +85,17 @@ class SettingsController : MvpController(), ISettingsView {
 
         sceneListIsNotExpanded.setEnterAction {
             sceneListIsNotExpanded.sceneRoot.findViewById<RecyclerView>(R.id.settingsList).apply {
-                settingsAdapter?.updateList(presenter.settings.take(shortListSize))
-                settingsAdapter?.setListIsExpanded(false)
+                settingsAdapter = SettingAdapter(
+                    settingsList,
+                    object : SettingAdapter.OnClickSettingListener {
+                        override fun onClick(setting: Setting) {
+                            sceneBackStack.add(sceneListIsNotExpanded)
+                            presenter.showFullSettingsList()
+                        }
+                    },
+                    isExpanded = false
+                )
+
                 adapter = settingsAdapter
 
                 layoutManager = GridLayoutManager(
@@ -94,6 +107,13 @@ class SettingsController : MvpController(), ISettingsView {
             }
         }
 
+        sceneListIsNotExpanded.sceneRoot.setOnClickListener {
+            handleBack()
+        }
+        TransitionManager.go(sceneListIsNotExpanded, transitionSet)
+    }
+
+    override fun showFullSettingsList(settingsList: List<Setting>) {
         sceneListIsExpanded = Scene.getSceneForLayout(
             binding.sceneRoot,
             R.layout.scene2,
@@ -102,14 +122,15 @@ class SettingsController : MvpController(), ISettingsView {
 
         sceneListIsExpanded.setEnterAction {
             sceneListIsExpanded.sceneRoot.findViewById<RecyclerView>(R.id.settingsList).apply {
-                settingsAdapter?.let{ it ->
-                    it.updateList(presenter.settings)
+                settingsAdapter?.let { it ->
+                    it.updateList(settingsList)
                     it.setListIsExpanded(true)
                     it.setOnClickSettingListener(
                         object : SettingAdapter.OnClickSettingListener {
                             override fun onClick(setting: Setting) {
-                                when (setting.settingType){
-                                    Setting.SettingTypes.BLUETOOTH ->{
+                                when (setting.settingType) {
+                                    Setting.SettingTypes.BLUETOOTH -> {
+                                        sceneBackStack.add(sceneListIsExpanded)
                                         presenter.showBluetoothScreen()
                                     }
                                 }
@@ -129,7 +150,15 @@ class SettingsController : MvpController(), ISettingsView {
         }
 
         sceneListIsExpanded.sceneRoot.setOnClickListener {
-            TransitionManager.go(sceneListIsNotExpanded, transitionSet)
+            handleBack()
+        }
+
+        TransitionManager.go(sceneListIsExpanded, transitionSet)
+    }
+
+    override fun showBluetoothScreen(devicesList: List<BluetoothDevice>) {
+        if (bluetoothDevicesAdapter == null) {
+            bluetoothDevicesAdapter = BluetoothAdapter(devicesList)
         }
 
         sceneBluetoothDevices = Scene.getSceneForLayout(
@@ -148,54 +177,29 @@ class SettingsController : MvpController(), ISettingsView {
                 )
             }
         }
-
-        return binding.root
-    }
-
-    override fun showSettings(settingsList: List<Setting>) {
-        binding.sceneRoot.scene1.settingsList.apply {
-            settingsAdapter = SettingAdapter(
-                settingsList.take(shortListSize),
-                object : SettingAdapter.OnClickSettingListener {
-                    override fun onClick(setting: Setting) {
-                        settingsAdapter?.let{
-                            if (!it.getListIsExpanded())
-                            {
-                                it.setListIsExpanded(true)
-                                TransitionManager.go(sceneListIsExpanded, transitionSet)
-                            }
-                        }
-                    }
-                },
-                isExpanded = false
-            )
-            adapter = settingsAdapter
-
-            layoutManager = GridLayoutManager(
-                activity?.applicationContext,
-                spanCount,
-                RecyclerView.VERTICAL,
-                false
-            )
-        }
-    }
-
-    override fun showBluetoothScreen(devicesList: List<BluetoothDevice>) {
-        if (bluetoothDevicesAdapter==null){
-            bluetoothDevicesAdapter = BluetoothAdapter(devicesList)
-        }
         TransitionManager.go(sceneBluetoothDevices, transitionSet)
     }
 
     override fun handleBack(): Boolean {
-        settingsAdapter?.let{
-            return if (it.getListIsExpanded()){
-                TransitionManager.go(sceneListIsNotExpanded, transitionSet)
-                true
-            } else{
-                super.handleBack()
+        try {
+            if (sceneBackStack.isNotEmpty()) {
+                when (sceneBackStack.last()) {
+                    sceneListIsNotExpanded -> {
+                        presenter.showShortList()
+                    }
+                    sceneListIsExpanded -> {
+                        presenter.showFullSettingsList()
+                    }
+                    sceneBluetoothDevices -> {
+                        presenter.showBluetoothScreen()
+                    }
+                }
+                sceneBackStack.removeLastOrNull()
+                return true
+            } else {
+                return super.handleBack()
             }
-        } ?: kotlin.run {
+        } catch (e: Exception) {
             return super.handleBack()
         }
     }
