@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ListInflator</string>
+    <string name="bluetooth_label">Bluetooth</string>
+    <string name="bluetooth_settings_label">Bluetooth Settings…</string>
 </resources>
