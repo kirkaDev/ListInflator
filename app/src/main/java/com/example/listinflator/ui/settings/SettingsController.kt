@@ -168,7 +168,7 @@ class SettingsController : MvpController(), ISettingsView {
         )
 
         sceneBluetoothDevices.setEnterAction {
-            sceneBluetoothDevices.sceneRoot.findViewById<RecyclerView>(R.id.devicesList).apply {
+            sceneBluetoothDevices.sceneRoot.findViewById<RecyclerView>(R.id.settingsList).apply {
                 adapter = bluetoothDevicesAdapter
 
                 layoutManager = LinearLayoutManager(

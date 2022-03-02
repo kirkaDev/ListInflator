@@ -39,7 +39,7 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/devicesList"
+        android:id="@+id/settingsList"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/topBluetoothScreen"
@@ -57,7 +57,7 @@
         android:id="@+id/bluetoothSettingsLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/devicesList"
+        app:layout_constraintTop_toBottomOf="@+id/settingsList"
         app:layout_constraintStart_toStartOf="@+id/topBluetoothScreen"
         app:layout_constraintEnd_toEndOf="@+id/topBluetoothScreen"
         app:layout_constraintBottom_toBottomOf="parent"
