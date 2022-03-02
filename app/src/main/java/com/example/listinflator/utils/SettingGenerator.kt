@@ -1,6 +1,7 @@
 package com.example.listinflator.utils
 
 import com.example.listinflator.R
+import com.example.listinflator.data.model.BluetoothDevice
 import com.example.listinflator.data.model.Setting
 
 object SettingGenerator
@@ -43,6 +44,23 @@ object SettingGenerator
                     "Not discoverable",
                     Setting.SettingTypes.HOTSPOT
                 ),
+            )
+        }
+
+        fun generateBluetoothDevices(): List<BluetoothDevice> {
+            return listOf<BluetoothDevice>(
+                BluetoothDevice(
+                    "AirPods Pro (Кирилл)",
+                    BluetoothDevice.ConnectionStates.CONNECTED
+                ),
+                BluetoothDevice(
+                    "Mazda CarPlay",
+                    BluetoothDevice.ConnectionStates.CONNECTED
+                ),
+                BluetoothDevice(
+                    "ELM327",
+                    BluetoothDevice.ConnectionStates.DISCONNECTED
+                )
             )
         }
 }
