@@ -5,6 +5,6 @@ data class BluetoothDevice(
     val connectionState: ConnectionStates
 ) {
     enum class ConnectionStates{
-        CONNECTED, DISCONNECTED
+        Connected, Disconnected
     }
 }

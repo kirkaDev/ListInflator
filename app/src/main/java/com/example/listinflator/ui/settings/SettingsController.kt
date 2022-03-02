@@ -7,14 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listinflator.Application
 import com.example.listinflator.R
+import com.example.listinflator.data.model.BluetoothDevice
 import com.example.listinflator.data.model.Setting
 import com.example.listinflator.databinding.ViewControllerSettingsBinding
 import com.example.listinflator.mvp.presenter.SettingsPresenter
 import com.example.listinflator.mvp.view.ISettingsView
 import com.example.listinflator.ui.main.MvpController
+import com.example.listinflator.ui.settings.adapters.BluetoothAdapter
 import com.example.listinflator.ui.settings.adapters.SettingAdapter
 import kotlinx.android.synthetic.main.scene1.view.*
 import kotlinx.android.synthetic.main.view_controller_settings.view.*
@@ -41,8 +44,8 @@ class SettingsController : MvpController(), ISettingsView {
     lateinit var sceneBluetoothDevices: Scene
 
     var settingsAdapter: SettingAdapter? = null
+    var bluetoothDevicesAdapter: BluetoothAdapter? = null
     var transitionSet: TransitionSet? = null
-
 
     override fun inject() {
         super.inject()
@@ -107,7 +110,7 @@ class SettingsController : MvpController(), ISettingsView {
                             override fun onClick(setting: Setting) {
                                 when (setting.settingType){
                                     Setting.SettingTypes.BLUETOOTH ->{
-                                        TransitionManager.go(sceneBluetoothDevices, transitionSet)
+                                        presenter.showBluetoothScreen()
                                     }
                                 }
                             }
@@ -134,6 +137,17 @@ class SettingsController : MvpController(), ISettingsView {
             R.layout.scene_bluetooth,
             activity?.applicationContext!!
         )
+
+        sceneBluetoothDevices.setEnterAction {
+            sceneBluetoothDevices.sceneRoot.findViewById<RecyclerView>(R.id.devicesList).apply {
+                adapter = bluetoothDevicesAdapter
+                layoutManager = LinearLayoutManager(
+                    activity?.applicationContext,
+                    RecyclerView.VERTICAL,
+                    false
+                )
+            }
+        }
 
         return binding.root
     }
@@ -164,6 +178,13 @@ class SettingsController : MvpController(), ISettingsView {
                 false
             )
         }
+    }
+
+    override fun showBluetoothScreen(devicesList: List<BluetoothDevice>) {
+        if (bluetoothDevicesAdapter==null){
+            bluetoothDevicesAdapter = BluetoothAdapter(devicesList)
+        }
+        TransitionManager.go(sceneBluetoothDevices, transitionSet)
     }
 
     override fun handleBack(): Boolean {

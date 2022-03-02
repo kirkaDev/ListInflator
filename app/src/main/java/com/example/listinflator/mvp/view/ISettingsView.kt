@@ -1,5 +1,6 @@
 package com.example.listinflator.mvp.view
 
+import com.example.listinflator.data.model.BluetoothDevice
 import com.example.listinflator.data.model.Setting
 import moxy.MvpView
 import moxy.viewstate.strategy.alias.AddToEnd
@@ -7,4 +8,5 @@ import moxy.viewstate.strategy.alias.AddToEnd
 @AddToEnd
 interface ISettingsView: MvpView {
     fun showSettings(settingsList: List<Setting>)
+    fun showBluetoothScreen(devicesList: List<BluetoothDevice>)
 }

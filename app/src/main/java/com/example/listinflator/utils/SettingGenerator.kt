@@ -51,16 +51,66 @@ object SettingGenerator
             return listOf<BluetoothDevice>(
                 BluetoothDevice(
                     "AirPods Pro (Кирилл)",
-                    BluetoothDevice.ConnectionStates.CONNECTED
+                    BluetoothDevice.ConnectionStates.Connected
                 ),
                 BluetoothDevice(
                     "Mazda CarPlay",
-                    BluetoothDevice.ConnectionStates.CONNECTED
+                    BluetoothDevice.ConnectionStates.Connected
                 ),
                 BluetoothDevice(
                     "ELM327",
-                    BluetoothDevice.ConnectionStates.DISCONNECTED
-                )
+                    BluetoothDevice.ConnectionStates.Disconnected
+                ),
+                BluetoothDevice(
+                    "Apple Watch",
+                    BluetoothDevice.ConnectionStates.Disconnected
+                ),
+                BluetoothDevice(
+                    "Xiaomi Mi Band 4",
+                    BluetoothDevice.ConnectionStates.Disconnected
+                ),
+
+                BluetoothDevice(
+                    "AirPods Pro (Александр)",
+                    BluetoothDevice.ConnectionStates.Connected
+                ),
+                BluetoothDevice(
+                    "Mazda CarPlay",
+                    BluetoothDevice.ConnectionStates.Connected
+                ),
+                BluetoothDevice(
+                    "ELM327",
+                    BluetoothDevice.ConnectionStates.Disconnected
+                ),
+                BluetoothDevice(
+                    "Apple Watch",
+                    BluetoothDevice.ConnectionStates.Disconnected
+                ),
+                BluetoothDevice(
+                    "Xiaomi Mi Band 2",
+                    BluetoothDevice.ConnectionStates.Disconnected
+                ),
+
+                BluetoothDevice(
+                    "AirPods Pro (Сергей)",
+                    BluetoothDevice.ConnectionStates.Connected
+                ),
+                BluetoothDevice(
+                    "Mazda CarPlay",
+                    BluetoothDevice.ConnectionStates.Connected
+                ),
+                BluetoothDevice(
+                    "ELM327",
+                    BluetoothDevice.ConnectionStates.Disconnected
+                ),
+                BluetoothDevice(
+                    "Apple Watch",
+                    BluetoothDevice.ConnectionStates.Disconnected
+                ),
+                BluetoothDevice(
+                    "Xiaomi Mi Band 3",
+                    BluetoothDevice.ConnectionStates.Disconnected
+                ),
             )
         }
 }

@@ -17,7 +17,17 @@ class SettingsPresenter
     fun initUI(){
         presenterScope.launch{
             settings = SettingGenerator.generateSettings()
-            viewState.showSettings(settings)
+            viewState.showSettings(
+                settings
+            )
+        }
+    }
+
+    fun showBluetoothScreen(){
+        presenterScope.launch {
+            viewState.showBluetoothScreen(
+                SettingGenerator.generateBluetoothDevices()
+            )
         }
     }
 }
