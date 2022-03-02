@@ -38,6 +38,7 @@ class SettingsController : MvpController(), ISettingsView {
 
     lateinit var sceneListIsNotExpanded: Scene
     lateinit var sceneListIsExpanded: Scene
+    lateinit var sceneBluetoothDevices: Scene
 
     var settingsAdapter: SettingAdapter? = null
     var transitionSet: TransitionSet? = null
@@ -98,10 +99,23 @@ class SettingsController : MvpController(), ISettingsView {
 
         sceneListIsExpanded.setEnterAction {
             sceneListIsExpanded.sceneRoot.findViewById<RecyclerView>(R.id.settingsList).apply {
-                settingsAdapter?.updateList(presenter.settings)
-                settingsAdapter?.setListIsExpanded(true)
-                adapter = settingsAdapter
+                settingsAdapter?.let{ it ->
+                    it.updateList(presenter.settings)
+                    it.setListIsExpanded(true)
+                    it.setOnClickSettingListener(
+                        object : SettingAdapter.OnClickSettingListener {
+                            override fun onClick(setting: Setting) {
+                                when (setting.settingType){
+                                    Setting.SettingTypes.BLUETOOTH ->{
+                                        TransitionManager.go(sceneBluetoothDevices, transitionSet)
+                                    }
+                                }
+                            }
+                        }
+                    )
+                }
 
+                adapter = settingsAdapter
                 layoutManager = GridLayoutManager(
                     activity?.applicationContext,
                     spanCount,
@@ -115,6 +129,12 @@ class SettingsController : MvpController(), ISettingsView {
             TransitionManager.go(sceneListIsNotExpanded, transitionSet)
         }
 
+        sceneBluetoothDevices = Scene.getSceneForLayout(
+            binding.sceneRoot,
+            R.layout.scene_bluetooth,
+            activity?.applicationContext!!
+        )
+
         return binding.root
     }
 
@@ -124,10 +144,13 @@ class SettingsController : MvpController(), ISettingsView {
                 settingsList.take(shortListSize),
                 object : SettingAdapter.OnClickSettingListener {
                     override fun onClick(setting: Setting) {
-                        (adapter as SettingAdapter).apply {
-                            setListIsExpanded(true)
+                        settingsAdapter?.let{
+                            if (!it.getListIsExpanded())
+                            {
+                                it.setListIsExpanded(true)
+                                TransitionManager.go(sceneListIsExpanded, transitionSet)
+                            }
                         }
-                        TransitionManager.go(sceneListIsExpanded, transitionSet)
                     }
                 },
                 isExpanded = false

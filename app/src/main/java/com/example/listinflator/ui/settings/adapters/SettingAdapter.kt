@@ -11,7 +11,7 @@ import com.example.listinflator.R
 import com.example.listinflator.data.model.Setting
 
 class SettingAdapter(private var settingsList: List<Setting>,
-                     private val onClickSettingListener: OnClickSettingListener,
+                     private var onClickSettingListener: OnClickSettingListener,
                      private var isExpanded: Boolean
 ): RecyclerView.Adapter<SettingAdapter.SettingViewHolder>() {
 
@@ -25,6 +25,10 @@ class SettingAdapter(private var settingsList: List<Setting>,
 
     fun getListIsExpanded(): Boolean{
         return isExpanded
+    }
+
+    fun setOnClickSettingListener(onClickSettingListener: OnClickSettingListener){
+        this.onClickSettingListener = onClickSettingListener
     }
 
     override fun onCreateViewHolder(
